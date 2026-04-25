@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Inbox, Filter, Clock, CheckCircle, ShieldAlert, MapPin, ArrowUpDown, Plus, MoreHorizontal, TrendingUp, Users, Briefcase, CalendarDays } from 'lucide-react';
 import Link from 'next/link';
+import { RoleContext } from './RoleContext';
 
 // Realistic tickets mapped to the 6-step lifecycle
 const initialTickets = [
@@ -25,24 +26,40 @@ const initialTickets = [
 
 const columns = [
   { status: 'intake',     title: '1. الاستلام',         color: '#6366f1' },
-  { status: 'classified', title: '2. الفرز والتصنيف',   color: '#2563eb' },
-  { status: 'assigned',   title: '3. تعيين المنسق',     color: '#8b5cf6' },
-  { status: 'field_done', title: '4. النزول الميداني',   color: '#d97706' },
-  { status: 'escalated',  title: '5. التدخل النيابي',   color: '#dc2626' },
-  { status: 'closed',     title: '6. مُغلقة',           color: '#059669' },
+  { status: 'classified', title: '2. الفرز',            color: '#2563eb' },
+  { status: 'assigned',   title: '3. الجدولة',          color: '#8b5cf6' },
+  { status: 'field_done', title: '4. النزول الميداني',  color: '#d97706' },
+  { status: 'escalated',  title: '5. المخاطبات',        color: '#dc2626' },
+  { status: 'on_hold',    title: 'معلقة',               color: '#64748b' },
+  { status: 'closed',     title: 'منجزة',               color: '#059669' },
 ];
 
 export default function CoordinatorDashboard() {
+  const role = useContext(RoleContext);
   const [tickets, setTickets] = useState(initialTickets);
+  const [filterBranch, setFilterBranch] = useState('');
+  const [filterAssignee, setFilterAssignee] = useState('');
+  const [filterDate, setFilterDate] = useState('');
 
   const moveTicket = (id: string, newStatus: string) => {
     setTickets(prev => prev.map(t => t.id === id ? { ...t, status: newStatus } : t));
   };
 
-  const total = tickets.length;
-  const open = tickets.filter(t => t.status !== 'closed').length;
-  const closed = tickets.filter(t => t.status === 'closed').length;
-  const urgent = tickets.filter(t => t.urgency === 'عاجل').length;
+  const filteredTickets = tickets.filter(t => {
+    if (filterBranch && t.branch !== filterBranch) return false;
+    if (filterAssignee && t.assignee !== filterAssignee) return false;
+    if (filterDate) {
+      const [y, m, d] = filterDate.split('-');
+      const formattedFilterDate = `${d}/${m}/${y}`;
+      if (t.date !== formattedFilterDate) return false;
+    }
+    return true;
+  });
+
+  const total = filteredTickets.length;
+  const open = filteredTickets.filter(t => t.status !== 'closed').length;
+  const closed = filteredTickets.filter(t => t.status === 'closed').length;
+  const urgent = filteredTickets.filter(t => t.urgency === 'عاجل').length;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '20px' }}>
@@ -54,7 +71,6 @@ export default function CoordinatorDashboard() {
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>اسحب وأفلت لتحريك القضايا بين المراحل المعتمدة.</p>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
-           <button className="btn btn-primary" style={{ padding: '8px 16px', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}><Plus size={16}/> تسجيل شكوى</button>
         </div>
       </div>
 
@@ -90,10 +106,41 @@ export default function CoordinatorDashboard() {
         </div>
       </div>
 
-      {/* 6-Column Kanban */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '12px', flex: 1, alignItems: 'start', overflowX: 'auto' }}>
+      {/* Filters for Manager */}
+      {role === 'مسؤول' && (
+        <div style={{ display: 'flex', gap: '12px', background: '#ffffff', padding: '16px', borderRadius: '10px', border: '1px solid var(--glass-border)', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.9rem', paddingLeft: '12px', borderLeft: '1px solid var(--glass-border)' }}>
+            <Filter size={18} /> فلاتر الإدارة:
+          </div>
+          <select value={filterBranch} onChange={e => setFilterBranch(e.target.value)} style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--glass-border)', outline: 'none', fontFamily: 'var(--font-arabic)', fontSize: '0.85rem', flex: 1 }}>
+            <option value="">الفرع (الكل)</option>
+            <option value="عمّان">عمّان</option>
+            <option value="الزرقاء">الزرقاء</option>
+            <option value="إربد">إربد</option>
+            <option value="الكرك">الكرك</option>
+            <option value="العقبة">العقبة</option>
+            <option value="السلط">السلط</option>
+            <option value="جرش">جرش</option>
+          </select>
+          <select value={filterAssignee} onChange={e => setFilterAssignee(e.target.value)} style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--glass-border)', outline: 'none', fontFamily: 'var(--font-arabic)', fontSize: '0.85rem', flex: 1 }}>
+            <option value="">الموظف (الكل)</option>
+            <option value="غير معين">غير معين</option>
+            <option value="أحمد محمد">أحمد محمد</option>
+            <option value="طارق زياد">طارق زياد</option>
+            <option value="سارة خالد">سارة خالد</option>
+            <option value="عمر حسن">عمر حسن</option>
+          </select>
+          <input type="date" value={filterDate} onChange={e => setFilterDate(e.target.value)} style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--glass-border)', outline: 'none', fontFamily: 'var(--font-arabic)', fontSize: '0.85rem', flex: 1, color: filterDate ? 'var(--text-primary)' : 'var(--text-muted)' }} />
+          {(filterBranch || filterAssignee || filterDate) && (
+            <button onClick={() => { setFilterBranch(''); setFilterAssignee(''); setFilterDate(''); }} style={{ background: 'var(--bg-accent)', color: 'var(--text-secondary)', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontFamily: 'var(--font-arabic)', fontSize: '0.85rem', fontWeight: 600 }}>مسح</button>
+          )}
+        </div>
+      )}
+
+      {/* 7-Column Kanban */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '12px', flex: 1, alignItems: 'start', overflowX: 'auto' }}>
         {columns.map(col => {
-          const colTickets = tickets.filter(t => t.status === col.status);
+          const colTickets = filteredTickets.filter(t => t.status === col.status);
           return (
             <div 
               key={col.status}

@@ -68,12 +68,12 @@ const ticketsDB: Record<string, any> = {
 };
 
 const stepLabels = [
-  '1. استلام الشكوى وإنشاء المعرّف',
-  '2. الفرز والتصنيف (الفرع + اللجنة)',
-  '3. تعيين المنسق وجدولة النزول',
+  '1. استلام الشكوى والمراجعة',
+  '2. الفرز وتحديد مسار العمل',
+  '3. جدولة النزول الميداني',
   '4. النزول الميداني وجمع البيانات',
-  '5. التدخل الحزبي / النيابي',
-  '6. الإغلاق والتوثيق وإشعار المواطن',
+  '5. المخاطبات والتدخل النيابي',
+  '6. اتخاذ القرار (منجزة / معلقة)',
 ];
 
 export default function TicketDetailPage({ params }: { params: { id: string } }) {
@@ -115,7 +115,7 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
             <h3 style={{ fontSize: '1.1rem', fontWeight: 800, margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <User size={18} color="var(--primary-color)" /> بيانات مقدّم الشكوى
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid var(--bg-accent)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid var(--bg-accent)' }}>
                <div>
                  <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px' }}>المواطن</span>
                  <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>{info.citizenName}</span>
@@ -127,10 +127,6 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
                <div>
                  <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px' }}>الفرع</span>
                  <span style={{ fontWeight: 700, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={12}/> {info.branch}</span>
-               </div>
-               <div>
-                 <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px' }}>اللجنة المختصة</span>
-                 <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--secondary-color)', display: 'flex', alignItems: 'center', gap: '4px' }}><Briefcase size={12}/> {info.committee}</span>
                </div>
             </div>
             <div>
@@ -238,41 +234,20 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
                 <ShieldAlert size={16} /> تصعيد للتدخل النيابي
               </button>
             )}
-            {info.currentStep >= 5 && info.currentStep < 6 && (
-              <button style={{ background: 'var(--primary-color)', color: '#ffffff', border: 'none', padding: '12px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: 700, fontSize: '0.85rem' }}>
-                <CheckCircle size={16} /> إغلاق القضية وإشعار المواطن
-              </button>
+            {info.currentStep === 5 && (
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button style={{ flex: 1, background: 'var(--bg-secondary)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', padding: '12px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: 700, fontSize: '0.85rem' }}>
+                  <Clock size={16} /> تعليق القضية
+                </button>
+                <button style={{ flex: 1, background: 'var(--primary-color)', color: '#ffffff', border: 'none', padding: '12px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: 700, fontSize: '0.85rem' }}>
+                  <CheckCircle size={16} /> إغلاق كـ (منجزة)
+                </button>
+              </div>
             )}
             {info.currentStep === 6 && (
               <div style={{ background: 'rgba(5,150,105,0.05)', border: '1px solid rgba(5,150,105,0.2)', padding: '12px', borderRadius: '8px', textAlign: 'center' }}>
                 <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 700, color: 'var(--primary-color)' }}>✓ هذه القضية مُغلقة ومؤرشفة</p>
               </div>
-            )}
-          </div>
-
-          {/* Assignee */}
-          <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid var(--glass-border)', padding: '24px' }}>
-            <h3 style={{ fontSize: '0.9rem', fontWeight: 800, margin: '0 0 16px 0', color: 'var(--text-secondary)' }}>المنسق المسؤول</h3>
-            {info.coordinator === 'غير معين' ? (
-              <div style={{ textAlign: 'center', padding: '16px', background: 'var(--bg-accent)', borderRadius: '8px' }}>
-                <p style={{ margin: '0 0 12px 0', fontSize: '0.9rem', color: 'var(--text-muted)' }}>لم يتم تعيين منسق بعد</p>
-                <button style={{ width: '100%', background: 'var(--primary-color)', color: '#ffffff', border: 'none', padding: '10px', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.85rem' }}>تعيين منسق الآن</button>
-              </div>
-            ) : (
-              <>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', background: 'var(--bg-accent)', padding: '12px', borderRadius: '8px' }}>
-                   <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--primary-color)', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1rem', fontWeight: 800 }}>
-                     {info.coordinator[0]}
-                   </div>
-                   <div>
-                     <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800 }}>م. {info.coordinator}</p>
-                     <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)' }}>المنسق المعتمد</p>
-                   </div>
-                </div>
-                <button style={{ width: '100%', background: 'transparent', color: 'var(--primary-color)', border: '1px dashed var(--glass-border)', padding: '10px', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700 }}>
-                   إعادة تعيين المنسق
-                </button>
-              </>
             )}
           </div>
 

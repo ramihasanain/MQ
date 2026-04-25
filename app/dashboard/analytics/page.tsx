@@ -1,6 +1,7 @@
 "use client";
 
-import { Activity, Target, CheckCircle, ShieldAlert, Zap, Users, TrendingUp, Clock, MapPin, BarChart3 } from 'lucide-react';
+import { useState } from 'react';
+import { Activity, Target, CheckCircle, ShieldAlert, Zap, Users, TrendingUp, Clock, MapPin, BarChart3, Filter } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Line, ComposedChart, Cell, PieChart, Pie } from 'recharts';
 
 // Weekly performance data
@@ -41,6 +42,19 @@ const staffData = [
 ];
 
 export default function AnalyticsDashboard() {
+  const [filterBranch, setFilterBranch] = useState('');
+  const [filterDate, setFilterDate] = useState('');
+
+  const filteredStaffData = staffData.filter(user => {
+    if (filterBranch && user.region !== filterBranch) return false;
+    return true;
+  });
+
+  const filteredBranchWorkload = branchWorkload.filter(branch => {
+    if (filterBranch && branch.name !== filterBranch) return false;
+    return true;
+  });
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       
@@ -64,8 +78,34 @@ export default function AnalyticsDashboard() {
         </div>
       </div>
 
+      {/* Filters */}
+      <div style={{ display: 'flex', gap: '12px', background: '#ffffff', padding: '16px', borderRadius: '10px', border: '1px solid var(--glass-border)', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.9rem', paddingLeft: '12px', borderLeft: '1px solid var(--glass-border)' }}>
+          <Filter size={18} /> فلاتر الإحصائيات:
+        </div>
+        <select value={filterBranch} onChange={e => setFilterBranch(e.target.value)} style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--glass-border)', outline: 'none', fontFamily: 'var(--font-arabic)', fontSize: '0.85rem', flex: 1 }}>
+          <option value="">الفرع (الكل)</option>
+          <option value="عمّان">عمّان</option>
+          <option value="الزرقاء">الزرقاء</option>
+          <option value="إربد">إربد</option>
+          <option value="الكرك">الكرك</option>
+          <option value="العقبة">العقبة</option>
+          <option value="المفرق">المفرق</option>
+        </select>
+        <select value={filterDate} onChange={e => setFilterDate(e.target.value)} style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--glass-border)', outline: 'none', fontFamily: 'var(--font-arabic)', fontSize: '0.85rem', flex: 1 }}>
+          <option value="">الفترة الزمنية (الكل)</option>
+          <option value="today">اليوم</option>
+          <option value="week">هذا الأسبوع</option>
+          <option value="month">هذا الشهر</option>
+          <option value="year">هذا العام</option>
+        </select>
+        {(filterBranch || filterDate) && (
+          <button onClick={() => { setFilterBranch(''); setFilterDate(''); }} style={{ background: 'var(--bg-accent)', color: 'var(--text-secondary)', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontFamily: 'var(--font-arabic)', fontSize: '0.85rem', fontWeight: 600 }}>مسح</button>
+        )}
+      </div>
+
       {/* KPIs */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
         <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid var(--glass-border)', padding: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
             <h3 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 600 }}>الطلبات الواردة (أسبوعي)</h3>
@@ -82,15 +122,6 @@ export default function AnalyticsDashboard() {
           </div>
           <span style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>960</span>
           <div style={{ marginTop: '12px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>نسبة الإنجاز 92%</div>
-        </div>
-
-        <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid var(--glass-border)', padding: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <h3 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 600 }}>محالة للإدارة العليا</h3>
-            <ShieldAlert size={18} color="var(--danger-color)" />
-          </div>
-          <span style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>14</span>
-          <div style={{ marginTop: '12px', fontSize: '0.8rem', color: 'var(--danger-color)', fontWeight: 600 }}>بحاجة لقرار إداري</div>
         </div>
 
         <div style={{ background: '#ffffff', borderRadius: '12px', border: '1px solid var(--glass-border)', padding: '20px' }}>
@@ -173,7 +204,7 @@ export default function AnalyticsDashboard() {
         </div>
         <div style={{ height: '280px' }}>
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={branchWorkload} margin={{ top: 10, right: 10, bottom: 10, left: -10 }}>
+            <BarChart data={filteredBranchWorkload} margin={{ top: 10, right: 10, bottom: 10, left: -10 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
               <XAxis dataKey="name" stroke="var(--text-muted)" tickLine={false} axisLine={false} fontSize={12} />
               <YAxis stroke="var(--text-muted)" tickLine={false} axisLine={false} fontSize={11} />
@@ -202,7 +233,7 @@ export default function AnalyticsDashboard() {
                </tr>
              </thead>
              <tbody>
-               {staffData.map((user) => (
+               {filteredStaffData.map((user) => (
                  <tr key={user.id} style={{ borderBottom: '1px solid var(--bg-accent)' }}>
                    <td style={{ padding: '14px 12px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                      <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: user.isTop ? 'var(--primary-color)' : 'var(--bg-accent)', color: user.isTop ? '#fff' : 'var(--text-secondary)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: '800', fontSize: '0.85rem' }}>

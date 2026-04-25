@@ -23,7 +23,7 @@ export default function MasterHubGateway() {
       </div>
 
       {/* Gateway Portals */}
-      <div className="hub-grid animate-fade-in-up delay-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px', maxWidth: '1100px', width: '100%' }}>
+      <div className="hub-grid animate-fade-in-up delay-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '32px', maxWidth: '800px', width: '100%' }}>
         
         {/* Portal 1: Citizens */}
         <Link href="/citizen" className="hub-card" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -42,37 +42,20 @@ export default function MasterHubGateway() {
           </div>
         </Link>
 
-        {/* Portal 2: Coordinators Dashboard */}
+        {/* Portal 2: Unified Dashboard */}
         <Link href="/dashboard" className="hub-card" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', height: '100%' }}>
           <div className="hub-card-inner" style={{ background: '#ffffff', padding: '40px 30px', borderRadius: '16px', border: '1px solid var(--glass-border)', boxShadow: '0 4px 12px rgba(0,0,0,0.03)', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', overflow: 'hidden', height: '100%' }}>
              <div className="hub-icon-wrapper" style={{ width: '70px', height: '70px', borderRadius: '50%', background: 'rgba(245, 158, 11, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', transition: 'all 0.3s ease' }}>
-                <Inbox size={32} color="#f59e0b" />
+                <Building2 size={32} color="#f59e0b" />
              </div>
-             <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '12px' }}>إدارة الملفات والمتابعة</h2>
+             <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '12px' }}>الإدارة والمتابعة (الميدان)</h2>
              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6', flex: 1 }}>
-                متابعة الطلبات الواردة وتوزيعها على الفروع، إدارة سير العمل والتقارير الميدانية.
+                منصة مدمجة للموظفين والمسؤولين لاستلام الطلبات، وتوزيع المهام، والاطلاع على الإحصائيات.
              </p>
              <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px', color: '#f59e0b', fontSize: '0.9rem', fontWeight: 700 }}>
-                الدخول لإدارة الملفات <MapPin size={16} />
+                الدخول للمنصة <MapPin size={16} />
              </div>
              <div className="hub-glow warning"></div>
-          </div>
-        </Link>
-
-        {/* Portal 3: HQ Command Center */}
-        <Link href="/admin" className="hub-card" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', height: '100%' }}>
-          <div className="hub-card-inner" style={{ background: '#ffffff', padding: '40px 30px', borderRadius: '16px', border: '1px solid var(--glass-border)', boxShadow: '0 4px 12px rgba(0,0,0,0.03)', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', overflow: 'hidden', height: '100%' }}>
-             <div className="hub-icon-wrapper" style={{ width: '70px', height: '70px', borderRadius: '50%', background: 'rgba(5, 150, 105, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', transition: 'all 0.3s ease' }}>
-                <ShieldAlert size={32} color="var(--primary-color)" />
-             </div>
-             <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '12px' }}>الإدارة العليا</h2>
-             <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6', flex: 1 }}>
-                المؤشرات العامة، التقارير، الإشراف على الفروع ومتابعة القضايا المحالة للإدارة.
-             </p>
-             <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary-color)', fontSize: '0.9rem', fontWeight: 700 }}>
-                الدخول للوحة الإدارة <Building2 size={16} />
-             </div>
-             <div className="hub-glow emerald"></div>
           </div>
         </Link>
 
