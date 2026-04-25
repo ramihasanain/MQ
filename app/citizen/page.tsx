@@ -18,7 +18,7 @@ export default function CitizenPortal() {
     
     // Simulate AI routing and Supabase save
     setTimeout(() => {
-      setTicketId(`IAF-${Math.floor(10000 + Math.random() * 90000)}`);
+      setTicketId(`UMA-${Math.floor(10000 + Math.random() * 90000)}`);
       setStep(5); // Success Step
       setIsSubmitting(false);
     }, 2500);
@@ -36,7 +36,7 @@ export default function CitizenPortal() {
           بوابة الخدمات السيادية والشكاوى
         </h1>
         <h2 style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', marginBottom: '16px', fontWeight: 600 }}>
-          جبهة العمل الإسلامي - الأردن
+          حزب الأمة - الأردن
         </h2>
         <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: '1.8', maxWidth: '600px', margin: '0 auto' }}>
           أخضعنا أحدث خوارزميات الذكاء الاصطناعي لتأمين وصول صوتك ومقترحاتك لقيادات الحزب ونوابه بشكل فوري وموثوق.

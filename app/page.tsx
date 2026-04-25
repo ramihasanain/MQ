@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { ShieldAlert, Inbox, UserCircle, Briefcase, Zap, Building2, MapPin, Target } from 'lucide-react';
+import { ShieldAlert, Inbox, UserCircle, Briefcase, Zap, Building2, MapPin, Target, Landmark } from 'lucide-react';
 
 export default function MasterHubGateway() {
   return (
@@ -9,11 +9,9 @@ export default function MasterHubGateway() {
       
       {/* Branding Header */}
       <div className="animate-fade-in-up" style={{ textAlign: 'center', marginBottom: '60px' }}>
-        <img 
-          src="https://upload.wikimedia.org/wikipedia/ar/thumb/8/87/Islamic_Action_Front_logo.png/150px-Islamic_Action_Front_logo.png" 
-          alt="الشعار" 
-          style={{ width: '80px', height: 'auto', marginBottom: '16px', display: 'inline-block' }} 
-        />
+        <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--bg-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto' }}>
+          <Landmark size={40} color="var(--primary-color)" />
+        </div>
         <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '12px', color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>
           منظومة نبض المواطن المتكاملة
         </h1>
